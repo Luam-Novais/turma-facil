@@ -1,0 +1,31 @@
+//fontes
+
+$primary-font: 'poppins';
+$secondary-font: 'noto sans';
+
+//colors
+
+$blue-color: #4780F1;
+$dark-blue-color: #143371;
+$gradient: linear-gradient(#4780F1, #6947F1);
+
+//texts colors
+$text-color: #140902;
+$text-contrast-color: #261F1A;
+$black: #111;
+$full-black: #010101;
+$full-white: #fff;
+$white: #ececec;
+$light-gray: #e9e9e9;
+$gray: #ccc; 
+$dark-gray: #777;
+
+//shadows
+$box-shadow: -2px 2px 9px $gray;
+$input-shadows: 2px 2px 9px $gray, -2px -2px 9px $full-white;
+$card-shadow: 2px 2px 9px $gray, -2px -2px 9px $full-white;
+
+//screen sizes 
+
+$tablet: 'max-width:868px';
+$mobile: 'max-width:568px';

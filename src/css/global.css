@@ -1,0 +1,3 @@
+@import url('./reset.css');
+@import url('./fontes.css');
+@import url('../layouts/PublicLayout/PublicLayout.module.scss')
