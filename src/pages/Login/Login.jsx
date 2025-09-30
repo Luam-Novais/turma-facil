@@ -8,11 +8,21 @@ import { userContext } from '../../context/UserContext'
 const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const {userLogin, loading }= useContext(userContext)
+  const {userLogin, loading, userAuthorized }= useContext(userContext)
+
+    console.log(userAuthorized)
 
   const handleSubmit = (e)=>{
     e.preventDefault()
-    userLogin()
+    if(username.length <= 0 || typeof username !== 'string' || username.length <= 0 || typeof password !== 'string'){
+      return alert('Ocorreu um erro, verifique os dados enviados.')
+    }
+    const data = {username, password}
+    userLogin(data)
+  }
+
+  if(loading) {
+    return <p>Loading...</p>
   }
 
   return (
