@@ -1,6 +1,6 @@
 @use '../../css/variables.scss' as *;
 .container{
-    height: 100vh;
+    min-height: 100vh;
     background-color: $gray;
     padding: 40px 80px;
 }
