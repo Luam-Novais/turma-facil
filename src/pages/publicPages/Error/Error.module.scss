@@ -1,0 +1,19 @@
+@use '../../../css/variables.scss' as *;
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    width: 70%;
+    
+    h1{
+        font-size: 2rem;
+        font-weight: 500;
+        i{
+            color: $dark-gray;
+        }
+    }
+    p{
+        font-size: 1.25rem;
+    }
+}
