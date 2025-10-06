@@ -8,7 +8,7 @@ const NotFound = () => {
     <section className={styles.container}>
         <h1>Pagina não encontrada.</h1>
         <p>Deseja voltar a pagina principal ?</p>
-        <Link to='/'>Início</Link>
+        <Link to='/dashboard'>Início</Link>
     </section>
   )
 }
