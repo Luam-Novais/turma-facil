@@ -3,8 +3,9 @@
     padding: 20px;
     display: flex;
     justify-content: center;
+    align-items: start;
     .loading{
-        width: 1.2rem;
+        width: 2rem;
         transform-origin: center;
         animation: rotate4 2s linear infinite;
     
