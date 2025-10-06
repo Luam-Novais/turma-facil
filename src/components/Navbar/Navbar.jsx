@@ -30,7 +30,7 @@ const Navbar = () => {
           </NavLink>
         </li>
          <li className={styles.link}>
-          <NavLink to='/buscar' className={(isActive) => (isActive ? `${styles.isActive}` : '')}>
+          <NavLink to='/buscar-modalidade' className={(isActive) => (isActive ? `${styles.isActive}` : '')}>
             <i>
               <IoIosSearch />
             </i>
@@ -38,7 +38,7 @@ const Navbar = () => {
           </NavLink>
         </li>
          <li className={styles.link}>
-          <NavLink to='/add-new' className={(isActive) => (isActive ? `${styles.isActive}` : '')}>
+          <NavLink to='/add-aluno-modalidade' className={(isActive) => (isActive ? `${styles.isActive}` : '')}>
             <i>
               <IoAddOutline />
             </i>
@@ -46,7 +46,7 @@ const Navbar = () => {
           </NavLink>
         </li>
         <li className={styles.link}>
-          <NavLink to='/listas' className={(isActive) => (isActive ? `${styles.isActive}` : '')}>
+          <NavLink to='/listar-alunos' className={(isActive) => (isActive ? `${styles.isActive}` : '')}>
             <i>
               <IoIosList />
             </i>
