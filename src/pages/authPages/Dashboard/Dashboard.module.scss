@@ -1,0 +1,41 @@
+@use '../../../css/variables.scss' as *;
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 20px;
+  padding: 20px;
+  .modaliContainer {
+    width: 200px;
+    height: 150px;
+    border-radius: 10px;
+   background-color: $full-white;
+   box-shadow: $box-shadow;
+   padding: 20px;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   gap: 20px;
+   text-decoration: none;
+   color: $text-color;
+   h3{
+    font-size: 1.5rem;
+    font-family: $primary-font;
+    font-weight: 500;
+   }
+   p{
+    font-family: $secondary-font;
+    span{
+      font-weight: 600;
+    }
+   }
+}
+}
+@media($smallPc) {
+  .container{
+    //   grid-template-columns: (1fr 1fr);
+      .modaliContainer{
+        width: 200px;
+          background-color: red;
+      }
+  }
+}
