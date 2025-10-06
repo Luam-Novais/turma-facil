@@ -24,6 +24,9 @@ const AppRoutes = () => {
           </Route>
           <Route  element={<AuthLayout/>}>
               <Route path='/dashboard' element={<Dashboard/>}/>
+              <Route path='/buscar-modalidade' element={<SearchModalidade/>}/>
+              <Route path='/add-aluno-modalidade' element={<AddALunoOrModalidade/>}/>
+              <Route path='/listar-alunos' element={<ToListALunos/>}/>
           </Route>
           <Route path='/error-servidor' element={<Error/>}/>
           <Route path='*' element={<NotFound/>} />
