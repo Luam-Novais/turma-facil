@@ -1,0 +1,79 @@
+@use '../../css/variables.scss' as *;
+.sidebar {
+  background-color: $full-white;
+  padding: 10px;
+  width: fit-content;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  z-index: 99999;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+  transition: all 0.4s ease-in-out;
+  position: relative;
+  width: 30px;
+
+    &.open{
+        width: 100%
+    }
+
+  button {
+    border-radius: 4px;
+    padding: 8px;
+    border: none;
+    background-color: $blue-color;
+    display: flex;
+    justify-content: center;
+    box-shadow: $box-shadow;
+    position: absolute;
+    right: -10px;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    i{
+      color: $full-white;
+    }
+    &:hover {
+      transform: scaleZ(2);
+    }
+  }
+
+  ul {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    
+    &.listVisible{
+      align-items: start;
+    }
+    .link {
+      a {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 1.125rem;
+        font-family: $secondary-font;
+        color: $text-color;
+        text-decoration: none;
+        &.active {
+            color: $blue-color;
+        }
+        span{
+            display: none;
+            opacity: 0;
+            width: 0px;
+            transition: all .2s ease-in-out;
+            &.visible{
+                display: block;
+                width: 100%;
+                opacity: 1;
+            }
+        }
+        i{
+            font-size: 1.5rem;
+        }
+      }
+    }
+  }
+}
