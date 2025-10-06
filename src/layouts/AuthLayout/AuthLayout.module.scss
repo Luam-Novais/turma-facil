@@ -1,0 +1,15 @@
+@use '../../css/variables.scss' as *;
+.container{
+    background-color: $white;
+    min-height: 100dvh;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 0.6fr 3fr;
+    row-gap: 10px;
+    column-gap: 10px;
+
+    .logo{
+        width: 200px;
+        grid-column: 1/-1;
+    }
+}

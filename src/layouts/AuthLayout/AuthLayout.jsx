@@ -9,7 +9,8 @@ const AuthLayout = () => {
     const navigate = useNavigate() 
     if(userAuthorized){
         return(
-            <main>
+            <main className={styles.container}>
+                <img className={styles.logo} src="/logo.svg" alt="" />
                <Navbar/>
                 <Outlet/>
             </main>
