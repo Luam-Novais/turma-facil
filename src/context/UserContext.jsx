@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 export const userContext = createContext();
 const UserStorage = ({ children }) => {
   const [userAuthorized, setUserAuthorized] = useState(false);
@@ -9,7 +11,7 @@ const UserStorage = ({ children }) => {
   async function userCreate(data) {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/create-prof', {
+      const response = await fetch(`${API_URL}create-prof`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +36,7 @@ const UserStorage = ({ children }) => {
   async function userLogin(data) {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3000/login-prof', {
+      const response = await fetch(`${API_URL}login-prof`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
