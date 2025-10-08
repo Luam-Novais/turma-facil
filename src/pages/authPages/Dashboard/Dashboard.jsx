@@ -2,34 +2,31 @@ import React, { useEffect, useState } from 'react';
 import styles from './Dashboard.module.scss';
 import Loading from '../../../components/Loading/Loading';
 import { Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import formaterToken from '../../../utils/formaterToken';
+import useFetch from '../../../hooks/useFetch';
 
 const API_URL = import.meta.env.VITE_API_URL
 
 const Dashboard = () => {
   const [modalidades, setModalidades] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const {request, loading} = useFetch()
 
   useEffect(() => {
-    setLoading(true);
     async function fetchData() {
-      try {
-        const tokenLocal = localStorage.getItem('token');
-        if (tokenLocal) {
-          const token = tokenLocal.slice(1, tokenLocal.length - 1);
-          const response = await fetch(`${API_URL}modalidade/get-modalidades`, {
+      const token = formaterToken()
+      const decode = jwtDecode(token)
+     if(token){
+       const responseModalidades = await request(`${API_URL}modalidade/get-modalidades`, {
+            method:'POST',
             headers: {
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
-          });
-          const json = await response.json();
-          console.log(json)
-          setModalidades(json);
-        }
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
+            body: JSON.stringify({profId: decode.profId})
+          })
+          setModalidades(responseModalidades.json)
+     }
     }
     fetchData();
   }, []);
