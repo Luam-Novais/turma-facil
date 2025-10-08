@@ -32,10 +32,25 @@
 }
 @media($smallPc) {
   .container{
-    //   grid-template-columns: (1fr 1fr);
+      grid-template-columns: (1fr 1fr);
       .modaliContainer{
         width: 200px;
-          background-color: red;
+      }
+  }
+}
+@media($tablet) {
+  .container{
+      grid-template-columns: (1fr 1fr);
+      .modaliContainer{
+        width: 150px;
+      }
+  }
+}
+@media($mobile) {
+  .container{
+      grid-template-columns: (1fr);
+      .modaliContainer{
+        width: 150px;
       }
   }
 }
