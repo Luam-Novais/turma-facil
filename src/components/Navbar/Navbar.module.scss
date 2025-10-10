@@ -27,7 +27,6 @@
     box-shadow: $box-shadow;
     position: absolute;
     right: -10px;
-    cursor: pointer;
     transition: all 0.4s ease-in-out;
     i{
       color: $full-white;
@@ -73,6 +72,30 @@
         i{
             font-size: 1.8rem;
             font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+@media($mobile){
+  .sidebar{
+    flex-direction: row;
+    width: 90%;
+    max-width: 90%;
+    height: 30px;    
+    &.open{
+      height: 200px;
+    }
+    ul{
+      width: 100%;
+      flex-direction: row;
+      &.listVisible{
+        flex-direction: column;
+      }
+      .link{
+        a{
+          font-family: 1rem;
         }
       }
     }
