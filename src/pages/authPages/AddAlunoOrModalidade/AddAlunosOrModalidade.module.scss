@@ -1,0 +1,36 @@
+@use '../../../css/variables.scss' as *;
+.container {
+  background-color: $full-white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1;
+  width: 90%;
+  .containerInputs {
+    position: relative;
+    display: flex;
+    width: fit-content;
+    padding: 2px;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: $box-shadow;
+    background-color: $white;
+  }
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 90%;
+    span{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 20px;
+      align-items: end;
+      justify-content: space-between;
+    }
+  }
+}
