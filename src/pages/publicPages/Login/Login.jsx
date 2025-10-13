@@ -28,7 +28,7 @@ const Login = () => {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <img src="../../public/logo.svg" alt="" />
+      <img src="./logo.svg" alt="" />
       <Tittle>Entrar</Tittle>
         <Input name='username' id='username' label='Nome de usuário' type='text' value={username} setValue={setUsername}/>
         <Input name='password' id='password' label='Senha' type='password' value={password} setValue={setPassword}/>

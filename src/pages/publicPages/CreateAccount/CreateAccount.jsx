@@ -29,7 +29,7 @@ const CreateAccount = () => {
   }
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      <img src="../../public/logo.svg" alt="" />
+      <img src="./public/logo.svg" alt="" />
       <Tittle>Criar conta</Tittle>
       <Input name="name" id="name" label="Nome do professor" type="text" value={name} setValue={setName} />
       <Input name="username" id="username" label="Nome de usuário" type="text" value={username} setValue={setUsername} />

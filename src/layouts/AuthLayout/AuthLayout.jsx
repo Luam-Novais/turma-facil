@@ -10,7 +10,7 @@ const AuthLayout = () => {
     if(userAuthorized){
         return(
             <main className={styles.container}>
-                <img className={styles.logo} src="/logo.svg" alt="" />
+                <img className={styles.logo} src="./logo.svg" alt="" />
                <Navbar/>
                 <Outlet/>
             </main>
