@@ -3,7 +3,7 @@ import styles from './Table.module.scss'
 
 const Table = ({children}) => {
   return (
-    <table>
+    <table className={styles.containerTable}>
           {children}
     </table>
   )
