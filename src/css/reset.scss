@@ -44,10 +44,19 @@ table {
 }
 h1{
 	font-family: $primary-font;
+	font-size: 2rem;
+
 }
-p{
+h3{
+	font-family: $primary-font;
+	font-size: 1.5rem;
+}
+p, label{
 	font-family: $secondary-font;
 }
 svg{
 	vertical-align: middle;
+}
+button,select{
+	cursor: pointer;
 }
