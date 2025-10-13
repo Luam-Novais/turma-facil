@@ -1,5 +1,5 @@
 @use '../../css/variables.scss' as *;
-  select {
+  .containerSelect {
     border: 1.5px solid $text-color;
     padding: 4px 20px;
     font-family: $primary-font;
