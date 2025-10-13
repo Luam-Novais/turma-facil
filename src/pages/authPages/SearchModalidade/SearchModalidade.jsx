@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './SearchModalidade.module.scss';
 import Loading from '../../../components/Loading/Loading';
 import Table from '../../../components/Table/Table';
+import Select from '../../../components/Select/Select';
 import formaterToken from '../../../utils/formaterToken';
 import { jwtDecode } from 'jwt-decode';
 import useFetch from '../../../hooks/useFetch';
@@ -14,10 +15,6 @@ const SearchModalidade = () => {
   const { request, loading } = useFetch();
   const token = formaterToken();
   const decode = jwtDecode(token);
-
-  function handleChange(e) {
-    setSelectedModalidade(e.target.value);
-  }
 
   useEffect(() => {
     async function fetchModalidade() {
@@ -55,8 +52,7 @@ const SearchModalidade = () => {
   if (modalidades) {
     return (
       <section className={styles.container}>
-        <select name="modalidades" id="modalidades" onChange={handleChange} value={selectedModalidade}>
-          <option value="">Selecione uma modalidade</option>
+        <Select name="modalidades" id="modalidades" value={selectedModalidade} setValue={setSelectedModalidade}>
           {modalidades.map((modalidade) => {
             return (
               <option key={modalidade.id} value={modalidade.id}>
@@ -64,7 +60,7 @@ const SearchModalidade = () => {
               </option>
             );
           })}
-        </select>
+        </Select>
         {selectedModalidade ? (
           <div className={styles.listContainer}>
             <span>
@@ -73,16 +69,25 @@ const SearchModalidade = () => {
             </span>
 
             <Table>
-              {alunos &&
-                alunos.map((aluno, index) => {
-                  return (
-                    <tr className={`${aluno.status == 'inativo' ? styles.inactive : ''}`}>
-                      <td>{index + 1}</td>
-                      <td>{aluno.name}</td>
-                      <td >{aluno.status}</td>
-                    </tr>
-                  );
-                })}
+              <thead>
+                <tr className={styles.theader}>
+                  <th>Indíce</th>
+                  <th>Nome</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {alunos &&
+                  alunos.map((aluno, index) => {
+                    return (
+                      <tr className={`${aluno.status == 'inativo' ? styles.inactive : ''}`}>
+                        <td>{index + 1}</td>
+                        <td>{aluno.name}</td>
+                        <td>{aluno.status}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
             </Table>
           </div>
         ) : (
