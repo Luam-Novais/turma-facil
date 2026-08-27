@@ -1,0 +1,21 @@
+{
+  "name": "turmafacil-system",
+  "version": "1.0.0",
+  "description": "sistema para gestao de alunos e turmas",
+  "license": "ISC",
+  "author": "luam novais",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.4.0",
+    "tsx": "^4.23.12"
+  }
+}
