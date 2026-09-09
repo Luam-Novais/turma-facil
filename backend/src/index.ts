@@ -1,5 +1,7 @@
 import express from 'express';
 import studentRoutes from './routes/student.routes';
+import teacherRoutes from './routes/teacher.routes';
+import classGroupRoutes from './routes/classGroup.routes';
 import { errorMiddleware } from './middlewares/http.middleware';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -9,6 +11,8 @@ server.use(express.json());
 server.use(express.urlencoded());
 
 server.use('/students', studentRoutes);
+server.use('/teacher', teacherRoutes);
+server.use('/classGroup', classGroupRoutes);
 
 server.use(errorMiddleware);
 server.listen(3000, () => [console.log('Hello word, Servidor rodando em porta 3000.')]);

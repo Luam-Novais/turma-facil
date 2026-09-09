@@ -2,7 +2,7 @@ import { type RequestHandler } from 'express';
 import StudentService from '../services/student.services';
 import StudentRepository from '../repository/student.repository';
 import { HttpError } from '../middlewares/http.middleware';
-import { StudentDTO, StudentUpdate } from '../types/student';
+import { StudentDTO } from '../types/student';
 
 const repository = new StudentRepository();
 const service = new StudentService(repository);
@@ -20,7 +20,7 @@ export default class StudentController {
     try {
       const student = req.body as StudentDTO;
       if (!student) throw new HttpError(400, 'Dados do aluno não enviados.');
-      if (!student.name || !student.contatc_number || !student.date_birth) throw new HttpError(400, 'Dados do aluno incompletos.');
+      if (!student.name || !student.contact_number || !student.date_birth) throw new HttpError(400, 'Dados do aluno incompletos.');
       const created = await service.create(student);
       if (created) {
         res.status(201).json({ message: `Aluno criado com sucesso.` });
@@ -32,7 +32,7 @@ export default class StudentController {
   update: RequestHandler = async (req, res, next) => {
     try {
       const { id } = req.params;
-      const data = req.body as StudentUpdate;
+      const data = req.body as Partial<StudentDTO>;
 
       if (!id) throw new HttpError(400, 'Identificador de aluno não enviado.');
       await service.update(+id, data);

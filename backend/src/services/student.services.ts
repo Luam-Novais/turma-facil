@@ -1,6 +1,6 @@
 import { HttpError } from '../middlewares/http.middleware';
 import StudentRepository from '../repository/student.repository';
-import { StudentUpdate, type StudentDTO } from '../types/student';
+import { type StudentDTO } from '../types/student';
 import { formatBirthDate } from '../utils/dates';
 import { cleanString } from '../utils/string';
 
@@ -16,7 +16,7 @@ export default class StudentService {
   };
   create = async (student: StudentDTO) => {
     try {
-      if (student.contatc_number.length < 11) throw new HttpError(400, 'Falha ao criar aluno, numero de telefone inválido.');
+      if (student.contact_number.length < 11) throw new HttpError(400, 'Falha ao criar aluno, numero de telefone inválido.');
       if (student.name.length <= 3 || (student.name_responsible && student.name_responsible.length <= 3)) {
         throw new HttpError(400, 'Dados inválidos. Por favor verifique o nome e telefone.');
       }
@@ -32,7 +32,7 @@ export default class StudentService {
       throw error;
     }
   };
-  update = async (student_id: number, data: StudentUpdate) => {
+  update = async (student_id: number, data: Partial<StudentDTO>) => {
     try {
       const updated = await this.repository.update(student_id, data);
       return updated;

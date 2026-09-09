@@ -1,5 +1,5 @@
 import { db } from '../config/prisma';
-import { StudentUpdate, type StudentDTO } from '../types/student';
+import { type StudentDTO } from '../types/student';
 export default class StudentRepository {
   findById = async (student_id: number) => {
     return await db.student.findUnique({
@@ -16,7 +16,7 @@ export default class StudentRepository {
       data: { ...student },
     });
   };
-  update = async (student_id: number, data: StudentUpdate) => {
+  update = async (student_id: number, data: Partial<StudentDTO>) => {
     try {
       return await db.student.update({
         where: { id: student_id },
@@ -28,15 +28,15 @@ export default class StudentRepository {
       throw error;
     }
   };
-  delete = async (student_id: number)=>{
+  delete = async (student_id: number) => {
     try {
-         return await db.student.delete({
-           where: {
-             id: student_id,
-           },
-         });
+      return await db.student.delete({
+        where: {
+          id: student_id,
+        },
+      });
     } catch (error) {
-      throw error
+      throw error;
     }
-  }
+  };
 }
