@@ -18,26 +18,18 @@ export default class TeacherRepository {
     });
   };
   update = async (teacher_id: number, data: Partial<TeacherDTO>) => {
-    try {
-      return await db.teacher.update({
-        where: { id: teacher_id },
-        data: {
-          ...data,
-        },
-      });
-    } catch (error: any) {
-      throw error;
-    }
+    return await db.teacher.update({
+      where: { id: teacher_id },
+      data: {
+        ...data,
+      },
+    });
   };
-  delete = async (teacher_id: number)=>{
-    try {
-         return await db.teacher.delete({
-           where: {
-             id: teacher_id,
-           },
-         });
-    } catch (error) {
-      throw error
-    }
-  }
+  delete = async (teacher_id: number) => {
+    return await db.teacher.delete({
+      where: {
+        id: teacher_id,
+      },
+    });
+  };
 }

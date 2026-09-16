@@ -17,26 +17,18 @@ export default class StudentRepository {
     });
   };
   update = async (student_id: number, data: Partial<StudentDTO>) => {
-    try {
-      return await db.student.update({
-        where: { id: student_id },
-        data: {
-          ...data,
-        },
-      });
-    } catch (error: any) {
-      throw error;
-    }
+    return await db.student.update({
+      where: { id: student_id },
+      data: {
+        ...data,
+      },
+    });
   };
   delete = async (student_id: number) => {
-    try {
-      return await db.student.delete({
-        where: {
-          id: student_id,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
+    return await db.student.delete({
+      where: {
+        id: student_id,
+      },
+    });
   };
 }

@@ -6,7 +6,6 @@ export interface Student {
   name_responsible: string;
 }
 export interface StudentDTO {
-  id?: number;
   name: string;
   contact_number: string;
   date_birth: string | Date;

@@ -35,16 +35,14 @@ model ClassGroup {
   id Int @id @default(autoincrement())
   name String @db.VarChar(50)
   teacher_id Int
+  monthly_price Int
   teacher Teacher @relation(fields: [teacher_id], references: [id])
   enrollments Enrollment[]
 }
-model Modality{
-  id Int @id @default(autoincrement())
-  name String @db.VarChar(50)
-}
+
 model Enrollment {
   id Int @id @default(autoincrement())
-  start_date DateTime
+  start_date DateTime @default(now())
   status Boolean
   student_id Int 
   student Student @relation(fields: [student_id], references: [id])

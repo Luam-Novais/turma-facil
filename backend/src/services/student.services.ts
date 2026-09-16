@@ -1,7 +1,7 @@
 import { HttpError } from '../middlewares/http.middleware';
 import StudentRepository from '../repository/student.repository';
 import { type StudentDTO } from '../types/student';
-import { formatBirthDate } from '../utils/dates';
+import { formatDate } from '../utils/dates';
 import { cleanString } from '../utils/string';
 
 interface GetQuerys {
@@ -23,7 +23,7 @@ export default class StudentService {
 
       const formated: StudentDTO = {
         ...student,
-        date_birth: formatBirthDate(student.date_birth as string),
+        date_birth: formatDate(student.date_birth as string),
       };
       const created = await this.repository.create(formated);
       return created;

@@ -11,7 +11,7 @@ export default class ClassGroupDTORepository {
   };
   get = async () => {
     return await db.classGroup.findMany({
-      include: {teacher: true}
+      include: { teacher: true },
     });
   };
   create = async (classGroup: ClassGroupDTO) => {
@@ -20,26 +20,18 @@ export default class ClassGroupDTORepository {
     });
   };
   update = async (classGroup_id: number, data: Partial<ClassGroupDTO>) => {
-    try {
-      return await db.classGroup.update({
-        where: { id: classGroup_id },
-        data: {
-          ...data,
-        },
-      });
-    } catch (error: any) {
-      throw error;
-    }
+    return await db.classGroup.update({
+      where: { id: classGroup_id },
+      data: {
+        ...data,
+      },
+    });
   };
-  delete = async (classGroup_id: number)=>{
-    try {
-         return await db.classGroup.delete({
-           where: {
-             id: classGroup_id,
-           },
-         });
-    } catch (error) {
-      throw error
-    }
-  }
+  delete = async (classGroup_id: number) => {
+    return await db.classGroup.delete({
+      where: {
+        id: classGroup_id,
+      },
+    });
+  };
 }
