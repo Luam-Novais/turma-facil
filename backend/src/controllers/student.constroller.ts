@@ -9,10 +9,23 @@ const service = new StudentService(repository);
 export default class StudentController {
   get: RequestHandler = async (req, res, next) => {
     try {
-      const query = req.query;
-      const students = await service.get(query);
+      const { filter } = req.query;
+
+      const students = await service.get(filter as string);
       res.status(200).json(students);
     } catch (error) {
+      next(error);
+    }
+  };
+  getStudent: RequestHandler = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { filter } = req.query;
+
+      if (!id) throw new HttpError(400, 'Identificador de aluno não enviado.');
+      const student = await service.getStudent(id as string, filter as string |undefined);
+      res.status(200).json(student)
+    } catch (error: any) {
       next(error);
     }
   };

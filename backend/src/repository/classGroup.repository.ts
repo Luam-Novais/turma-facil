@@ -11,7 +11,9 @@ export default class ClassGroupDTORepository {
   };
   get = async () => {
     return await db.classGroup.findMany({
-      include: { teacher: true },
+      include: {
+        teacher: true,
+      },
     });
   };
   create = async (classGroup: ClassGroupDTO) => {

@@ -3,6 +3,19 @@ import { db } from '../config/prisma';
 import { EnrollmentDTO, EnrollmentAndSudentDTO } from '../types/enrollments';
 
 export class EnrollmentsRepository {
+  get = async ()=>{
+    return await db.enrollment.findMany({
+      include: {class: true, student: true}
+    })
+  }
+  getEnrollmentsActive = async(status:boolean)=>{
+     return await db.enrollment.findMany({
+      where :{
+        status: status
+      },
+       include: { class: true, student: true },
+     });
+  }
   createStudentAndEnrollments = async (data: EnrollmentAndSudentDTO) => {
     return await db.$transaction(async (tx) => {
       const student = await tx.student.create({

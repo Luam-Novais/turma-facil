@@ -14,7 +14,9 @@ export default class ClassGroupService {
       const created = await this.repository.create(classGroup);
       return created;
     } catch (error: any) {
-      console.error(error.message);
+      if(error.code === 'P2003'){
+        throw new HttpError(404, 'Identificador de professor inválido, professor não encotrado.')
+      }
       throw error;
     }
   };

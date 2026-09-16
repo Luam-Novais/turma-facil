@@ -5,6 +5,8 @@ import { enrollmentSchema } from '../schemas/enrollment.schema';
 const router = Router();
 const controller = new EnrollmentsController();
 
+router.get('', (req, res, next) => controller.get(req, res, next));
+router.get('/:id', (req, res, next) => controller.get(req, res, next));
 router.post(
   '',
   (req, res, next) => validateSchemaMiddleware(req, res, next, enrollmentSchema),

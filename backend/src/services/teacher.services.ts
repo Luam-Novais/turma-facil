@@ -1,6 +1,7 @@
 import { HttpError } from '../middlewares/http.middleware';
 import teacherRepository from '../repository/teacher.repository';
 import { type TeacherDTO } from '../types/teacher';
+import {validateRegex, phoneRegex} from '../utils/regex'
 
 
 
@@ -11,7 +12,7 @@ export default class teacherService {
   };
   create = async (teacher: TeacherDTO) => {
     try {
-      if (teacher.name.length < 3 || teacher.contact_number.length > 11) {
+      if (teacher.name.length < 3 || !validateRegex(phoneRegex, teacher.contact_number)) {
         throw new HttpError(400, 'Dados inválidos. Por favor verifique o nome e telefone.');
       }
 

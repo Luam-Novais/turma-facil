@@ -7,10 +7,13 @@ export default class TeacherRepository {
       where: {
         id: teacher_id,
       },
+      include: { class: true },
     });
   };
   get = async () => {
-    return await db.teacher.findMany();
+    return await db.teacher.findMany({
+      include: { class: true },
+    });
   };
   create = async (teacher: TeacherDTO) => {
     return await db.teacher.create({

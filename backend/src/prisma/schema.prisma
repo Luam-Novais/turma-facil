@@ -23,7 +23,7 @@ model Student {
   contact_number String @db.VarChar(20) @unique
   date_birth DateTime 
   name_responsible String? @db.VarChar(50)
-  enrollment_id Enrollment[]
+  enrollments Enrollment[]
 }
 model Teacher {
   id Int @id @default(autoincrement())
@@ -35,7 +35,7 @@ model ClassGroup {
   id Int @id @default(autoincrement())
   name String @db.VarChar(50)
   teacher_id Int
-  monthly_price Int
+  monthly_price Decimal @db.Decimal
   teacher Teacher @relation(fields: [teacher_id], references: [id])
   enrollments Enrollment[]
 }
@@ -48,4 +48,5 @@ model Enrollment {
   student Student @relation(fields: [student_id], references: [id])
   class_id Int
   class ClassGroup @relation(fields: [class_id], references: [id])
+  @@unique([class_id, student_id])
 }

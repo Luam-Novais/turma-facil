@@ -7,6 +7,19 @@ import { phoneRegex, validateRegex } from '../utils/regex';
 export class EnrollmentsService {
   constructor(private repository: EnrollmentsRepository) {}
 
+  get = async (filter?: string) => {
+    switch (filter) {
+      default: {
+        return await this.repository.get();
+      }
+      case 'active': {
+        return await this.repository.getEnrollmentsActive(true);
+      }
+      case 'desactive': {
+        return await this.repository.getEnrollmentsActive(true);
+      }
+    }
+  };
   create = async (data: CreateEnrollmentDTO) => {
     if ('student_id' in data) {
       return await this.createEnrollmentsForExistingStudent(data);
@@ -56,6 +69,9 @@ export class EnrollmentsService {
       };
       return await this.repository.createStudentAndEnrollments(formated);
     } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new HttpError(400, 'Falha ao criar matricula, matricula ja existente.');
+      }
       if (error.code === 'P2003') {
         throw new HttpError(400, 'O identificador da turma não existe.');
       }
@@ -76,6 +92,9 @@ export class EnrollmentsService {
 
       return await this.repository.createEnrollmentsForExistingStudent(formated);
     } catch (error: any) {
+      if (error.code === 'P2002') {
+        throw new HttpError(400, 'Falha ao criar matricula, matricula ja existente.');
+      }
       if (error.code === 'P2025') {
         const { modelName } = error.meta;
         if (modelName === `Student`) throw new HttpError(404, 'Aluno não encontrado.');

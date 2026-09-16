@@ -8,8 +8,23 @@ export default class StudentRepository {
       },
     });
   };
+  getStudentAndEnrollments = async (student_id: number) => {
+    return await db.student.findUnique({
+      where: { id: student_id },
+      include: { enrollments: true },
+    });
+  };
+  getStudentAndPayments = async (student_id: number) => {};
+
   get = async () => {
     return await db.student.findMany();
+  };
+  getChildrenStudent = async () => {
+    return await db.student.findMany({
+      where: {
+        name_responsible: { not: null },
+      },
+    });
   };
   create = async (student: StudentDTO) => {
     return await db.student.create({

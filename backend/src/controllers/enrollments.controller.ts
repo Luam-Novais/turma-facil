@@ -7,6 +7,16 @@ const repository = new EnrollmentsRepository();
 const service = new EnrollmentsService(repository);
 
 export class EnrollmentsController {
+  get: RequestHandler = async(req, res, next) =>{
+    try {
+      const {filter} =req.query
+      const enrollments = await service.get(filter as string)
+
+      res.status(200).json(enrollments)
+    } catch (error) {
+      next(error)
+    }
+  }
   create: RequestHandler = async (req, res, next) => {
     try {
       const data = req.body;
