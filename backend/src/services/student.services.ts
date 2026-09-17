@@ -17,10 +17,22 @@ export default class StudentService {
       }
     }
   };
+  getBySearch = async(value : string) =>{
+    try {
+      if(!value) return await this.repository.get()
+      return await this.repository.getBySearch(value)
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
+  }
   getStudent = async (id: string, filter?: string) => {
     try {
       if (filter) {
         switch (cleanString(filter)) {
+          default: {
+            return await this.repository.get()
+          }
           case 'enrollments': {
             return await this.repository.getStudentAndEnrollments(Number(id));
           }

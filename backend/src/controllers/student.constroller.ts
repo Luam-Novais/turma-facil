@@ -17,14 +17,23 @@ export default class StudentController {
       next(error);
     }
   };
+  getBySearch: RequestHandler = async (req, res, next) => {
+    try {
+      const { value } = req.query;
+      const students = await service.getBySearch(value as string);
+      res.status(200).json(students);
+    } catch (error) {
+      next(error);
+    }
+  };
   getStudent: RequestHandler = async (req, res, next) => {
     try {
       const { id } = req.params;
       const { filter } = req.query;
 
       if (!id) throw new HttpError(400, 'Identificador de aluno não enviado.');
-      const student = await service.getStudent(id as string, filter as string |undefined);
-      res.status(200).json(student)
+      const student = await service.getStudent(id as string, filter as string | undefined);
+      res.status(200).json(student);
     } catch (error: any) {
       next(error);
     }

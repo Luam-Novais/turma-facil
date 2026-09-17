@@ -3,19 +3,35 @@ import { db } from '../config/prisma';
 import { EnrollmentDTO, EnrollmentAndSudentDTO } from '../types/enrollments';
 
 export class EnrollmentsRepository {
-  get = async ()=>{
-    return await db.enrollment.findMany({
-      include: {class: true, student: true}
-    })
-  }
-  getEnrollmentsActive = async(status:boolean)=>{
-     return await db.enrollment.findMany({
-      where :{
-        status: status
-      },
-       include: { class: true, student: true },
-     });
-  }
+  get = async () => {
+    const [students, total] = await Promise.all([
+      db.enrollment.findMany({
+        include: { class: true, student: true },
+      }),
+      db.enrollment.count(),
+    ]);
+    return { students, total };
+  };
+  getAllStudentEnrollments = async (id: number) => {
+    return await db.enrollment.findMany({ where: { student_id: id }, include: { class: true } });
+  };
+  getAllEnrollmentsClass = async (id: number) => {
+    return await db.enrollment.findMany({ where: { class_id: id }, include: { student: true } });
+  };
+  getEnrollmentsByStatus = async (status: boolean) => {
+    const [enrollments, total] = await Promise.all([
+      await db.enrollment.findMany({
+        where: {
+          status,
+        },
+        include: { class: true, student: true },
+      }),
+      await db.enrollment.count({
+        where: { status },
+      }),
+    ]);
+    return {enrollments, total}
+  };
   createStudentAndEnrollments = async (data: EnrollmentAndSudentDTO) => {
     return await db.$transaction(async (tx) => {
       const student = await tx.student.create({

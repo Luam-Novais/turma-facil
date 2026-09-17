@@ -7,6 +7,7 @@ const controller = new StudentController();
 const router = Router();
 //get
 router.get('', (req, res, next) => controller.get(req, res, next));
+router.get('/search', (req, res, next) => controller.getBySearch(req, res, next));
 router.get('/:id', (req, res, next) => controller.getStudent(req, res, next));
 //post
 router.post(

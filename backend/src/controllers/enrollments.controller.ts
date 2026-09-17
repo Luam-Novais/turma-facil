@@ -17,6 +17,28 @@ export class EnrollmentsController {
       next(error)
     }
   }
+  getAllStudentEnrollments: RequestHandler  = async (req, res, next) =>{
+  try {
+      const { id } = req.params;
+      const studentsAndEnrollments = await service.getAllStudentEnrollments(id as string);
+      res.status(200).json(studentsAndEnrollments)
+  } catch (error) {
+    next(error)
+  }
+  }
+  getAllEnrollmentsClass: RequestHandler = async(req, res, next)=>{
+    try {
+       try {
+         const { id } = req.params;
+         const enrollments = await service.getAllEnrollmentsClass(id as string);
+         res.status(200).json(enrollments);
+       } catch (error) {
+         next(error);
+       }
+    } catch (error) {
+      
+    }
+  }
   create: RequestHandler = async (req, res, next) => {
     try {
       const data = req.body;

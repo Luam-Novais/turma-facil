@@ -6,18 +6,37 @@ import { phoneRegex, validateRegex } from '../utils/regex';
 
 export class EnrollmentsService {
   constructor(private repository: EnrollmentsRepository) {}
-
   get = async (filter?: string) => {
     switch (filter) {
       default: {
         return await this.repository.get();
       }
       case 'active': {
-        return await this.repository.getEnrollmentsActive(true);
+        return await this.repository.getEnrollmentsByStatus(true);
       }
       case 'desactive': {
-        return await this.repository.getEnrollmentsActive(true);
+        return await this.repository.getEnrollmentsByStatus(false);
       }
+    }
+  };
+  getAllStudentEnrollments = async (id: string | undefined) => {
+    try {
+      if (!id) throw new HttpError(400, 'Identificador de aluno não enviado.');
+      const studentsAndEnrollments = await this.repository.getAllStudentEnrollments(Number(id));
+      return studentsAndEnrollments;
+    } catch (error: any) {
+      if (error.code === '') {
+      }
+      throw error;
+    }
+  };
+  getAllEnrollmentsClass = async (id: string | undefined) => {
+    try {
+      if (!id) throw new HttpError(400, 'Identificador de aluno não enviado.');
+      const enrollments = await this.repository.getAllEnrollmentsClass(Number(id));
+      return enrollments;
+    } catch (error: any) {
+      throw error;
     }
   };
   create = async (data: CreateEnrollmentDTO) => {
