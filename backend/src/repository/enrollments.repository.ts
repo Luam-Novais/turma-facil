@@ -1,6 +1,6 @@
 import e from 'express';
 import { db } from '../config/prisma';
-import { EnrollmentDTO, EnrollmentAndSudentDTO } from '../types/enrollments';
+import { EnrollmentDTO, EnrollmentAndSudentDTO, StatusEnrollment} from '../types/enrollments';
 
 export class EnrollmentsRepository {
   get = async () => {
@@ -18,11 +18,11 @@ export class EnrollmentsRepository {
   getAllEnrollmentsClass = async (id: number) => {
     return await db.enrollment.findMany({ where: { class_id: id }, include: { student: true } });
   };
-  getEnrollmentsByStatus = async (status: boolean) => {
+  getEnrollmentsByStatus = async (status: StatusEnrollment) => {
     const [enrollments, total] = await Promise.all([
       await db.enrollment.findMany({
         where: {
-          status,
+          status: status,
         },
         include: { class: true, student: true },
       }),
@@ -30,7 +30,7 @@ export class EnrollmentsRepository {
         where: { status },
       }),
     ]);
-    return {enrollments, total}
+    return { enrollments, total };
   };
   createStudentAndEnrollments = async (data: EnrollmentAndSudentDTO) => {
     return await db.$transaction(async (tx) => {
@@ -42,7 +42,7 @@ export class EnrollmentsRepository {
         data: {
           start_date: new Date(data.start_date),
           class_id: +data.class_id,
-          status: true,
+          status: "ACTIVE",
           student_id: student.id,
         },
       });
@@ -53,10 +53,10 @@ export class EnrollmentsRepository {
       await tx.student.findFirstOrThrow({ where: { id: +data.student_id } });
       await tx.classGroup.findFirstOrThrow({ where: { id: +data.class_id } });
 
-      await tx.enrollment.create({ data: { ...data, start_date: new Date(data.start_date) } });
+      await tx.enrollment.create({ data: { ...data, status: "ACTIVE", start_date: new Date(data.start_date) } });
     });
   };
-  updateStatusEnrollment = async (id: number, status: boolean) => {
+  updateStatusEnrollment = async (id: number, status: StatusEnrollment) => {
     return db.enrollment.update({
       where: { id: id },
       data: {

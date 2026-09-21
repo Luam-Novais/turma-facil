@@ -53,10 +53,10 @@ export class EnrollmentsController {
       const { id } = req.params;
       const data = req.body;
       if (!id) throw new HttpError(400, 'Identificador não enviado.');
-
       const enrollment = await service.update(Number(id), data);
-      if (!enrollment?.status) res.status(200).json({ message: 'Matrícula desativada.' });
-      res.status(200).json({ message: 'Matrícula ativada.' });
+      if (enrollment?.status === `CANCELED`) res.status(200).json({ message: 'Matrícula cancelada.' });
+     if (enrollment?.status === `ACTIVE`) res.status(200).json({ message: 'Matrícula ativada.' });
+     if (enrollment?.status === `INACTIVE`) res.status(200).json({ message: 'Matrícula desativada.' });
     } catch (error) {
       next(error);
     }

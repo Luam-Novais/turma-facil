@@ -3,7 +3,7 @@ import { studentSchema } from './student.schema';
 
 export const enrollmentSchema = z.object({
   start_date: z.string(),
-  status: z.coerce.boolean(),
+  status: z.coerce.string(),
   student_id: z.coerce.number().optional(),
   class_id: z.coerce.number(),
   student_data: studentSchema.optional()

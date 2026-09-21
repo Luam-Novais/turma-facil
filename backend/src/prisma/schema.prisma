@@ -12,6 +12,17 @@ datasource db {
   provider = "postgresql"
 }
 
+enum STATUS_ENROLLMENT {
+  ACTIVE
+  INACTIVE
+  CANCELED
+}
+enum STATUS_MONTHLY_FEE {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELED
+}
 model Adm {
   id Int @id @default(autoincrement())
   username String @db.Text
@@ -35,7 +46,7 @@ model ClassGroup {
   id Int @id @default(autoincrement())
   name String @db.VarChar(50)
   teacher_id Int
-  monthly_price Decimal @db.Decimal
+  monthly_price Decimal @db.Decimal(10, 2)
   teacher Teacher @relation(fields: [teacher_id], references: [id])
   enrollments Enrollment[]
 }
@@ -43,10 +54,29 @@ model ClassGroup {
 model Enrollment {
   id Int @id @default(autoincrement())
   start_date DateTime @default(now())
-  status Boolean
-  student_id Int 
+  status STATUS_ENROLLMENT  
+  student_id Int
   student Student @relation(fields: [student_id], references: [id])
   class_id Int
   class ClassGroup @relation(fields: [class_id], references: [id])
   @@unique([class_id, student_id])
+  monthly_fee Monthly_fee[]
+}
+model Monthly_fee{
+    id Int @id @default(autoincrement())
+    enrollment_id Int
+    value Decimal @db.Decimal(10, 2)
+    enrollment Enrollment @relation(fields: [enrollment_id], references: [id])
+    expiration_date DateTime
+    status STATUS_MONTHLY_FEE
+    payment_id Int? @unique
+    payment Payment? @relation(fields: [payment_id], references: [id])
+    created_at  DateTime @default(now())
+}
+model Payment {
+  id Int @id @default(autoincrement())
+  value Decimal @db.Decimal(10, 2)
+  monthly_fee Monthly_fee? 
+  description String? @db.VarChar(200)
+  payment_date DateTime @default(now())
 }

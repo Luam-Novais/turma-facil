@@ -8,6 +8,7 @@ import { cleanString } from '../utils/string';
 export default class StudentService {
   constructor(private repository: StudentRepository) {}
   get = async (filter: string) => {
+    if (!filter) return await this.repository.get();
     switch (cleanString(filter)) {
       default: {
         return await this.repository.get();
@@ -17,21 +18,21 @@ export default class StudentService {
       }
     }
   };
-  getBySearch = async(value : string) =>{
+  getBySearch = async (value: string) => {
     try {
-      if(!value) return await this.repository.get()
-      return await this.repository.getBySearch(value)
+      if (!value) return await this.repository.get();
+      return await this.repository.getBySearch(value);
     } catch (error) {
-      console.error(error)
-      throw error
+      console.error(error);
+      throw error;
     }
-  }
+  };
   getStudent = async (id: string, filter?: string) => {
     try {
       if (filter) {
         switch (cleanString(filter)) {
           default: {
-            return await this.repository.get()
+            return await this.repository.get();
           }
           case 'enrollments': {
             return await this.repository.getStudentAndEnrollments(Number(id));

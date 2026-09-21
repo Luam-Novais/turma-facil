@@ -1,6 +1,6 @@
 import { HttpError } from '../middlewares/http.middleware';
 import { EnrollmentsRepository } from '../repository/enrollments.repository';
-import { CreateEnrollmentDTO, EnrollmentAndSudentDTO, EnrollmentDTO } from '../types/enrollments';
+import { CreateEnrollmentDTO, EnrollmentAndSudentDTO, EnrollmentDTO, StatusEnrollment } from '../types/enrollments';
 import { formatDate } from '../utils/dates';
 import { phoneRegex, validateRegex } from '../utils/regex';
 
@@ -12,10 +12,13 @@ export class EnrollmentsService {
         return await this.repository.get();
       }
       case 'active': {
-        return await this.repository.getEnrollmentsByStatus(true);
+        return await this.repository.getEnrollmentsByStatus('ACTIVE');
       }
-      case 'desactive': {
-        return await this.repository.getEnrollmentsByStatus(false);
+      case 'inactive': {
+        return await this.repository.getEnrollmentsByStatus('INACTIVE');
+      }
+      case 'canceled': {
+        return await this.repository.getEnrollmentsByStatus('CANCELED');
       }
     }
   };
@@ -49,7 +52,10 @@ export class EnrollmentsService {
     try {
       if ('status' in data) {
         if (data.status === undefined) throw new HttpError(400, `Status para atualização não enviado.`);
-        return await this.repository.updateStatusEnrollment(id, data.status);
+        const formatedStatus = data.status.trim().toUpperCase();
+      if(!availableStatus.includes(formatedStatus))
+        if (formatedStatus) throw new HttpError(400, `Status para atualização inválido.`);
+        return await this.repository.updateStatusEnrollment(id, formatedStatus as StatusEnrollment );
       }
     } catch (error: any) {
       if (error.code === 'P2025') {
@@ -79,7 +85,7 @@ export class EnrollmentsService {
       const formated: EnrollmentAndSudentDTO = {
         ...data,
         class_id: Number(data.class_id),
-        status: true,
+        status: 'ACTIVE',
         start_date: formatDate(data.start_date as string),
         student_data: {
           ...data.student_data,
@@ -106,7 +112,7 @@ export class EnrollmentsService {
         class_id: Number(data.class_id),
         student_id: Number(data.student_id),
         start_date: formatDate(data.start_date as string),
-        status: true,
+        status: 'ACTIVE',
       };
 
       return await this.repository.createEnrollmentsForExistingStudent(formated);
@@ -123,3 +129,4 @@ export class EnrollmentsService {
     }
   };
 }
+const availableStatus = ['ACTIVE', 'CANCELED', 'INACTIVE'];
