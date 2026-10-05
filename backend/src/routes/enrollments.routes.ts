@@ -7,7 +7,6 @@ const controller = new EnrollmentsController();
 
 //get
 router.get('', (req, res, next) => controller.get(req, res, next));
-router.get('/:id', (req, res, next) => controller.get(req, res, next));
 router.get('/student/:id', (req, res, next) => controller.getAllStudentEnrollments(req, res, next));
 router.get('/class/:id', (req, res, next) => controller.getAllEnrollmentsClass(req, res, next));
 

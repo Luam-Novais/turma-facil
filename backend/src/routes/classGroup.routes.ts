@@ -6,6 +6,7 @@ import { classGroupSchema } from '../schemas/classGroup.schema';
 const controller = new ClassGroupController();
 const router = Router();
 router.get('', (req, res, next) => controller.get(req, res, next));
+router.get('/:id', (req, res, next) => controller.getById(req, res, next));
 router.post(
   '',
   (req, res, next) => validateSchemaMiddleware(req, res, next, classGroupSchema),

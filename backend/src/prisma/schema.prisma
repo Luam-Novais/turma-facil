@@ -47,6 +47,7 @@ model ClassGroup {
   name String @db.VarChar(50)
   teacher_id Int
   monthly_price Decimal @db.Decimal(10, 2)
+  daysOfWeek Int[]
   teacher Teacher @relation(fields: [teacher_id], references: [id])
   enrollments Enrollment[]
 }
@@ -68,10 +69,11 @@ model Monthly_fee{
     value Decimal @db.Decimal(10, 2)
     enrollment Enrollment @relation(fields: [enrollment_id], references: [id])
     expiration_date DateTime
-    status STATUS_MONTHLY_FEE
+    status STATUS_MONTHLY_FEE @default(PENDING)
     payment_id Int? @unique
     payment Payment? @relation(fields: [payment_id], references: [id])
     created_at  DateTime @default(now())
+    @@unique([enrollment_id, expiration_date])
 }
 model Payment {
   id Int @id @default(autoincrement())

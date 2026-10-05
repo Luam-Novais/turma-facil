@@ -18,7 +18,7 @@ export default class StudentRepository {
   getBySearch = async (searchName: string) => {
     return await db.student.findMany({
       where: { name: { contains: searchName, mode: 'insensitive' } },
-    });   
+    });
   };
   get = async () => {
     return await db.student.findMany();

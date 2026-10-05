@@ -1,16 +1,20 @@
 import { HttpError } from '../middlewares/http.middleware';
 import { EnrollmentsRepository } from '../repository/enrollments.repository';
 import { CreateEnrollmentDTO, EnrollmentAndSudentDTO, EnrollmentDTO, StatusEnrollment } from '../types/enrollments';
+import { MonthlyFeeDTO } from '../types/monthlyFee';
 import { formatDate } from '../utils/dates';
 import { phoneRegex, validateRegex } from '../utils/regex';
+import { MonthlyFeeService } from './monthlyFee.services';
+
 
 export class EnrollmentsService {
-  constructor(private repository: EnrollmentsRepository) {}
+  constructor(private repository: EnrollmentsRepository,  private monthlyFeeService: MonthlyFeeService) {}
   get = async (filter?: string) => {
     switch (filter) {
       default: {
         return await this.repository.get();
       }
+
       case 'active': {
         return await this.repository.getEnrollmentsByStatus('ACTIVE');
       }
@@ -42,7 +46,7 @@ export class EnrollmentsService {
       throw error;
     }
   };
-  create = async (data: CreateEnrollmentDTO) => {
+  create = async ( data: CreateEnrollmentDTO) => {
     if ('student_id' in data) {
       return await this.createEnrollmentsForExistingStudent(data);
     }
@@ -53,9 +57,8 @@ export class EnrollmentsService {
       if ('status' in data) {
         if (data.status === undefined) throw new HttpError(400, `Status para atualização não enviado.`);
         const formatedStatus = data.status.trim().toUpperCase();
-      if(!availableStatus.includes(formatedStatus))
-        if (formatedStatus) throw new HttpError(400, `Status para atualização inválido.`);
-        return await this.repository.updateStatusEnrollment(id, formatedStatus as StatusEnrollment );
+        if (!availableStatus.includes(formatedStatus)) if (formatedStatus) throw new HttpError(400, `Status para atualização inválido.`);
+        return await this.repository.updateStatusEnrollment(id, formatedStatus as StatusEnrollment);
       }
     } catch (error: any) {
       if (error.code === 'P2025') {
@@ -92,7 +95,7 @@ export class EnrollmentsService {
           date_birth: formatDate(data.student_data.date_birth as string),
         },
       };
-      return await this.repository.createStudentAndEnrollments(formated);
+      return await this.repository.createStudentAndEnrollments(formated, this.monthlyFeeService);
     } catch (error: any) {
       if (error.code === 'P2002') {
         throw new HttpError(400, 'Falha ao criar matricula, matricula ja existente.');
@@ -115,7 +118,7 @@ export class EnrollmentsService {
         status: 'ACTIVE',
       };
 
-      return await this.repository.createEnrollmentsForExistingStudent(formated);
+      return await this.repository.createEnrollmentsForExistingStudent(formated,this.monthlyFeeService);
     } catch (error: any) {
       if (error.code === 'P2002') {
         throw new HttpError(400, 'Falha ao criar matricula, matricula ja existente.');

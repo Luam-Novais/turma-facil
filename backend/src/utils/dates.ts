@@ -5,3 +5,4 @@ export function formatDate(date: string): Date {
   formatDate.setUTCHours(0, 0, 0, 0);
   return formatDate;
 }
+
