@@ -19,6 +19,7 @@ export default class classGroupController {
   create: RequestHandler = async (req, res, next) => {
     try {
       const classGroup = req.body as ClassGroupDTO;
+
       if (!classGroup) throw new HttpError(400, 'Dados da turma não enviados.');
       if (!classGroup.name) throw new HttpError(400, 'Dados da turma incompletos.');
       const created = await service.create(classGroup);

@@ -4,4 +4,5 @@ export const classGroupSchema = z.object({
   name: z.string(),
   teacher_id: z.coerce.number(),
   monthly_price: z.coerce.number(),
-});
+  daysOfWeek: z.array(z.number())
+  });

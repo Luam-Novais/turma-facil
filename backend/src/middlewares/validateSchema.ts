@@ -3,6 +3,7 @@ import * as z from 'zod';
 
 export const validateSchemaMiddleware = (req: Request, res: Response, next: NextFunction, schema: z.ZodObject) => {
   try {
+    console.log(req.body)
     const result = schema.parse(req.body);
     req.body = result;
     next();

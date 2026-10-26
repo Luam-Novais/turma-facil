@@ -2,7 +2,7 @@ import * as z from 'zod'
 import { studentSchema } from './student.schema';
 
 export const enrollmentSchema = z.object({
-  start_date: z.string(),
+  start_date: z.coerce.date(),
   status: z.coerce.string(),
   student_id: z.coerce.number().optional(),
   class_id: z.coerce.number(),

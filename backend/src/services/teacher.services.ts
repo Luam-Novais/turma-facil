@@ -19,7 +19,7 @@ export default class teacherService {
       const created = await this.repository.create(teacher);
       return created;
     } catch (error: any) {
-      console.error(error.message);
+      if(error.code === 'P2002') throw new HttpError(400, "Número de telefone já existente.")
       throw error;
     }
   };

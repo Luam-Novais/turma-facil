@@ -1,10 +1,8 @@
 import { MonthlyFeeRepository } from '../repository/monthlyFee.repository';
 import { HttpError } from '../middlewares/http.middleware';
-import { MonthlyFeeDTO } from '../types/monthlyFee';
 import { ClassGroupDTO } from '../types/classGroup';
 import { cleanString } from '../utils/string';
-import { Prisma } from '../generated/prisma/client';
-import { da } from 'zod/locales';
+import { MonthlyFeeDTO } from '../types/monthlyFee';
 
 export class MonthlyFeeService {
   constructor(private repository: MonthlyFeeRepository) {}
@@ -41,18 +39,35 @@ export class MonthlyFeeService {
       if ((error.code = '')) throw new HttpError(400, 'Falha ao buscar mensalidades.');
     }
   };
-  
-  formatToEnrollmentCreation = (classGroup: ClassGroupDTO) => {
-    const expiration_date = new Date()
-    expiration_date.setHours(0,0,0,0)
-    if(expiration_date.getDate() < 15) expiration_date.setDate(15)
-    else expiration_date.setDate(expiration_date.getDate() + 1)
+  update = async (id: number, data: MonthlyFeeDTO) => {
+    try {
+      if (!id) throw new HttpError(404, 'identificador da mensalidade não enviado.');
+      if (!data) throw new HttpError(404, 'dados para atualização não enviados.');
+      if (data.status && data.status === 'PAID') return await this.repository.paidMonthlyFee(id);
+      return await this.repository.update(id, data);
+    } catch (error: any) {
+      if (error.code === 'P2025') {
+        throw new HttpError(404, 'Mensalidade não encontrada.');
+      }
+      throw error;
+    }
+  };
+  createInitialMonthlyFee = (classGroup: ClassGroupDTO) => {
+    if (!classGroup.daysOfWeek || classGroup.daysOfWeek.length < 1) throw new HttpError(400, 'Falha ao calcular valor da mensalidade devido a falta dos dias de aulas.');
+    const expiration_date = this.calculateExpirationDate();
 
-    console.log(expiration_date)
     return {
       expiration_date,
       ...this.calculateValueMonthlyFee(classGroup),
     };
+  };
+  private calculateExpirationDate = () => {
+    const expiration_date = new Date();
+    expiration_date.setHours(0, 0, 0, 0);
+    if (expiration_date.getDate() < 15) expiration_date.setDate(15);
+    else expiration_date.setDate(expiration_date.getDate() + 1);
+
+    return expiration_date;
   };
   private calculateValueMonthlyFee = (classGroup: ClassGroupDTO) => {
     const today = new Date();
@@ -60,31 +75,38 @@ export class MonthlyFeeService {
     const lastDayMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     const quantity = this.countRemainingClassDay(today, lastDayMonth, classGroup.daysOfWeek);
 
-    if (today.getDate() <= 15)
+    if (today.getDate() <= 15 || quantity > 4) {
       return {
         value: classGroup.monthly_price,
         quantity,
       };
-    else if (quantity === 4)
-      return {
-        value: Prisma.Decimal(70),
-        quantity,
-      };
-    else if (quantity === 3)
-      return {
-        value: Prisma.Decimal(60),
-        quantity,
-      };
-    else if (quantity === 2)
-      return {
-        value: Prisma.Decimal(50),
-        quantity,
-      };
-    else
-      return {
-        value: Prisma.Decimal(0),
-        quantity,
-      };
+    }
+    switch (quantity) {
+      case 4: {
+        return {
+          value: 70,
+          quantity,
+        };
+      }
+      case 3: {
+        return {
+          value: 60,
+          quantity,
+        };
+      }
+      case 2: {
+        return {
+          value: 50,
+          quantity,
+        };
+      }
+      default: {
+        return {
+          value: 0,
+          quantity,
+        };
+      }
+    }
   };
   private countRemainingClassDay = (today: Date, lastDayMonth: Date, days: number[]) => {
     let date = new Date(today);

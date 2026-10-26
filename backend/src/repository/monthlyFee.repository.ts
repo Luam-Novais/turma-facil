@@ -87,9 +87,47 @@ export class MonthlyFeeRepository {
       },
     });
   };
-  createInEnrollmentCreation = async(data:MonthlyFeeDTO)=>{
+  paidMonthlyFee = async (id: number) => {
+    return await db.$transaction(async (tx) => {
+      const monthly_fee = await tx.monthly_fee.findUniqueOrThrow({
+        where: { id },
+        omit:{
+          created_at:true,
+          expiration_date:true,
+          payment_id:true,
+          enrollment_id:true
+        },
+        include: {
+          enrollment: {
+            include: {
+              student: {
+                select: { name: true },
+              },
+              class:{select: {name: true}}
+            },
+          },
+        },
+      });
+
+      const payment = await tx.payment.create({
+        data: {
+          value: monthly_fee.value,
+          description: `Pagamento mensalidade da matrícula de ${monthly_fee.enrollment.student.name} na turma ${monthly_fee.enrollment.class.name}.`,
+        },
+      });
+
+      await tx.monthly_fee.update({
+        where: { id },
+        data: {
+          payment_id: payment.id,
+          status: 'PAID',
+        },
+      });
+    });
+  };
+  createInEnrollmentCreation = async (data: MonthlyFeeDTO) => {
     return await db.monthly_fee.create({
-      data: {...data}
-    })
-  }
+      data: { ...data },
+    });
+  };
 }
