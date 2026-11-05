@@ -6,7 +6,7 @@ import { MonthlyFeeService } from '../services/monthlyFee.services';
 import { MonthlyFeeRepository } from '../repository/monthlyFee.repository';
 
 const repository = new EnrollmentsRepository();
-const monthlyFeService = new MonthlyFeeService(new MonthlyFeeRepository()); 
+const monthlyFeService = new MonthlyFeeService(new MonthlyFeeRepository());
 const service = new EnrollmentsService(repository, monthlyFeService);
 
 export class EnrollmentsController {
@@ -30,14 +30,12 @@ export class EnrollmentsController {
   };
   getAllEnrollmentsClass: RequestHandler = async (req, res, next) => {
     try {
-      try {
-        const { id } = req.params;
-        const enrollments = await service.getAllEnrollmentsClass(id as string);
-        res.status(200).json(enrollments);
-      } catch (error) {
-        next(error);
-      }
-    } catch (error) {}
+      const { id } = req.params;
+      const enrollments = await service.getAllEnrollmentsClass(id as string);
+      res.status(200).json(enrollments);
+    } catch (error) {
+      next(error);
+    }
   };
   create: RequestHandler = async (req, res, next) => {
     try {

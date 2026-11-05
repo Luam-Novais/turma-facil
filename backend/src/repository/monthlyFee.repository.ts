@@ -1,5 +1,6 @@
 import { db } from '../config/prisma';
 import { MonthlyFeeDTO, MonthlyFeeStatus } from '../types/monthlyFee';
+import { HttpError } from '../middlewares/http.middleware';
 export class MonthlyFeeRepository {
   //GET
   get = async () => {
@@ -91,11 +92,11 @@ export class MonthlyFeeRepository {
     return await db.$transaction(async (tx) => {
       const monthly_fee = await tx.monthly_fee.findUniqueOrThrow({
         where: { id },
-        omit:{
-          created_at:true,
-          expiration_date:true,
-          payment_id:true,
-          enrollment_id:true
+        omit: {
+          created_at: true,
+          expiration_date: true,
+          payment_id: true,
+          enrollment_id: true,
         },
         include: {
           enrollment: {
@@ -103,19 +104,23 @@ export class MonthlyFeeRepository {
               student: {
                 select: { name: true },
               },
-              class:{select: {name: true}}
+              class: { select: { name: true } },
             },
           },
         },
       });
-
+      if (monthly_fee.status === 'PAID') {
+        throw new HttpError(400, 'Mensalidade já está paga.');
+      }
+      if (monthly_fee.status === 'CANCELED') {
+        throw new HttpError(400, 'Mensalidade cancelada não pode ser paga.');
+      }
       const payment = await tx.payment.create({
         data: {
           value: monthly_fee.value,
           description: `Pagamento mensalidade da matrícula de ${monthly_fee.enrollment.student.name} na turma ${monthly_fee.enrollment.class.name}.`,
         },
       });
-
       await tx.monthly_fee.update({
         where: { id },
         data: {

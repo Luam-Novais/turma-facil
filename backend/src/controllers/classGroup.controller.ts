@@ -4,13 +4,22 @@ import ClassGroupRepository from '../repository/classGroup.repository';
 import { HttpError } from '../middlewares/http.middleware';
 import { type ClassGroupDTO } from '../types/classGroup';
 
-
 const repository = new ClassGroupRepository();
 const service = new ClassService(repository);
 export default class classGroupController {
   get: RequestHandler = async (req, res, next) => {
     try {
       const classGroup = await service.get();
+      res.status(200).json(classGroup);
+    } catch (error) {
+      next(error);
+    }
+  };
+  getById: RequestHandler = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      if (!isNaN(Number(id))) throw new HttpError(400, `Identificador inválido.`);
+      const classGroup = await service.getById(Number(id));
       res.status(200).json(classGroup);
     } catch (error) {
       next(error);

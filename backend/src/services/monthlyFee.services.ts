@@ -27,16 +27,23 @@ export class MonthlyFeeService {
         case 'currentMonth': {
           const date = new Date();
           const initialDate = new Date(date.getFullYear(), date.getMonth(), 1);
-          const finalDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          const finalDate = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
           return await this.repository.getCurrentMonth(initialDate, finalDate);
-        }
-        case 'byEnrollment': {
-          const enrollmentId = Number(filter.split(':')[1]);
-          return await this.repository.getByEnrollment(enrollmentId);
         }
       }
     } catch (error: any) {
-      if ((error.code = '')) throw new HttpError(400, 'Falha ao buscar mensalidades.');
+      throw error;
+      // if ((error.code === '')) throw new HttpError(400, 'Falha ao buscar mensalidades.');
+    }
+  };
+  getById = async (id: number) => {
+    try {
+      return await this.repository.getById(id);
+    } catch (error: any) {
+      if (error.code === 'P2025') {
+        throw new HttpError(404, 'Mensalidade não encontrada.');
+      }
+      throw error;
     }
   };
   update = async (id: number, data: MonthlyFeeDTO) => {

@@ -52,12 +52,10 @@ export class EnrollmentsService {
   };
   update = async (id: number, data: Partial<EnrollmentDTO>) => {
     try {
-      if ('status' in data) {
-        if (data.status === undefined) throw new HttpError(400, `Status para atualização não enviado.`);
-        const formatedStatus = data.status.trim().toUpperCase();
-        if (!availableStatus.includes(formatedStatus)) if (formatedStatus) throw new HttpError(400, `Status para atualização inválido.`);
-        return await this.repository.updateStatusEnrollment(id, formatedStatus as StatusEnrollment);
-      }
+      if (data.status === undefined) throw new HttpError(400, 'Status para atualização não enviado.');
+      const formatedStatus = data.status.trim().toUpperCase();
+      if (!availableStatus.includes(formatedStatus)) throw new HttpError(400, 'Status para atualização inválido.');
+      return await this.repository.updateStatusEnrollment(id, formatedStatus as StatusEnrollment);
     } catch (error: any) {
       if (error.code === 'P2025') {
         const { modelName } = error.meta;
@@ -71,6 +69,7 @@ export class EnrollmentsService {
       if (id === undefined) throw new HttpError(400, 'O id não foi enviado.');
       await this.repository.delete(id);
     } catch (error: any) {
+      if (error.code === 'P2003') throw new HttpError(409, 'Não é possível excluir a matrícula pois ela possui registros vinculados.');
       if (error.code === 'P2025') {
         const { modelName } = error.meta;
         if (modelName === `Enrollment`) throw new HttpError(404, 'Matrícula não encontrada.');
@@ -94,11 +93,11 @@ export class EnrollmentsService {
       };
       return await this.repository.createStudentAndEnrollments(formated, this.monthlyFeeService);
     } catch (error: any) {
-      console.log(error);
-      if (error.code === 'P2002' && error.modelName === 'Student') {
+      console.error(error);
+      if (error.code === 'P2002' && error.meta.modelName === 'Student') {
         throw new HttpError(400, 'Falha ao criar matricula, matricula ja existente.');
       }
-      if (error.code === 'P2003') {
+      if (error.code === 'P2025') {
         throw new HttpError(400, 'O identificador da turma não existe.');
       }
       throw new HttpError(400, error.message);

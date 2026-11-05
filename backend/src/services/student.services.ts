@@ -54,7 +54,7 @@ export default class StudentService {
   create = async (student: StudentDTO) => {
     try {
       if (!validateRegex(phoneRegex, student.contact_number)) throw new HttpError(400, 'Falha ao criar aluno, numero de telefone inválido.');
-      if (student.name.length <= 3 || (student.name_responsible && student.name_responsible.length <= 3)) {
+      if (student.name.length < 3 || (student.name_responsible && student.name_responsible.length <= 3)) {
         throw new HttpError(400, 'Dados inválidos. Por favor verifique o nome e telefone.');
       }
       const formated: StudentDTO = {
@@ -83,6 +83,7 @@ export default class StudentService {
       const deleted = await this.repository.delete(student_id);
       return deleted;
     } catch (error: any) {
+      if (error.code === 'P2003') throw new HttpError(409, 'Não é possível excluir o aluno pois ele possui registros vinculados.');
       if (error.code === `P2025`) {
         throw new HttpError(404, 'Aluno não encontrado.');
       }

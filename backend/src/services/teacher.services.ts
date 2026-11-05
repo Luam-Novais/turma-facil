@@ -1,9 +1,7 @@
 import { HttpError } from '../middlewares/http.middleware';
 import teacherRepository from '../repository/teacher.repository';
 import { type TeacherDTO } from '../types/teacher';
-import {validateRegex, phoneRegex} from '../utils/regex'
-
-
+import { validateRegex, phoneRegex } from '../utils/regex';
 
 export default class teacherService {
   constructor(private repository: teacherRepository) {}
@@ -19,7 +17,7 @@ export default class teacherService {
       const created = await this.repository.create(teacher);
       return created;
     } catch (error: any) {
-      if(error.code === 'P2002') throw new HttpError(400, "Número de telefone já existente.")
+      if (error.code === 'P2002') throw new HttpError(400, 'Número de telefone já existente.');
       throw error;
     }
   };
@@ -39,6 +37,7 @@ export default class teacherService {
       const deleted = await this.repository.delete(teacher_id);
       return deleted;
     } catch (error: any) {
+      if (error.code === 'P2003') throw new HttpError(409, 'Não é possível excluir o professor pois ele possui registros vinculados.');
       if (error.code === `P2025`) {
         throw new HttpError(404, 'professor não encontrado.');
       }

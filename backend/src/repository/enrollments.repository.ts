@@ -78,9 +78,16 @@ export class EnrollmentsRepository {
       await tx.student.findFirstOrThrow({ where: { id: +data.student_id } });
       const classGroup = await tx.classGroup.findFirstOrThrow({ where: { id: +data.class_id } });
 
-      const enrollment = await tx.enrollment.create({ data: { ...data, status: 'ACTIVE', start_date: new Date(data.start_date) } });
+      const enrollment = await tx.enrollment.create({
+        data: {
+          class_id: data.class_id,
+          student_id: data.student_id,
+          status: 'ACTIVE',
+          start_date: new Date(data.start_date),
+        },
+      });
       const monthly_feeData = monthlyFeeService.createInitialMonthlyFee(classGroup);
-      console.log(monthly_feeData, "aqui")
+      console.log(monthly_feeData, 'aqui');
       await tx.monthly_fee.create({
         data: {
           value: monthly_feeData.value,
