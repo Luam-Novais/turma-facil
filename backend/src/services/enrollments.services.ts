@@ -59,7 +59,7 @@ export class EnrollmentsService {
     } catch (error: any) {
       if (error.code === 'P2025') {
         const { modelName } = error.meta;
-        if (modelName === `Enrollment`) throw new HttpError(404, 'Matrícula não encontrada.');
+        if (modelName && modelName === `Enrollment`) throw new HttpError(404, 'Matrícula não encontrada.');
       }
       throw error;
     }
@@ -72,7 +72,7 @@ export class EnrollmentsService {
       if (error.code === 'P2003') throw new HttpError(409, 'Não é possível excluir a matrícula pois ela possui registros vinculados.');
       if (error.code === 'P2025') {
         const { modelName } = error.meta;
-        if (modelName === `Enrollment`) throw new HttpError(404, 'Matrícula não encontrada.');
+        if (modelName && modelName === `Enrollment`) throw new HttpError(404, 'Matrícula não encontrada.');
       }
       throw error;
     }
@@ -94,7 +94,7 @@ export class EnrollmentsService {
       return await this.repository.createStudentAndEnrollments(formated, this.monthlyFeeService);
     } catch (error: any) {
       console.error(error);
-      if (error.code === 'P2002' && error.meta.modelName === 'Student') {
+      if (error.code === 'P2002' && error.meta?.modelName === 'Student') {
         throw new HttpError(400, 'Falha ao criar matricula, matricula ja existente.');
       }
       if (error.code === 'P2025') {
@@ -120,8 +120,8 @@ export class EnrollmentsService {
       }
       if (error.code === 'P2025') {
         const { modelName } = error.meta;
-        if (modelName === `Student`) throw new HttpError(404, 'Aluno não encontrado.');
-        if (modelName === `ClassGroup`) throw new HttpError(404, 'Turma não encontrada.');
+        if (modelName && modelName === `Student`) throw new HttpError(404, 'Aluno não encontrado.');
+        if (modelName && modelName === `ClassGroup`) throw new HttpError(404, 'Turma não encontrada.');
       }
       throw new HttpError(500, error.message);
     }

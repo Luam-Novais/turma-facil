@@ -2,7 +2,6 @@ import { MonthlyFeeRepository } from '../repository/monthlyFee.repository';
 import { HttpError } from '../middlewares/http.middleware';
 import { ClassGroupDTO } from '../types/classGroup';
 import { cleanString } from '../utils/string';
-import { MonthlyFeeDTO } from '../types/monthlyFee';
 
 export class MonthlyFeeService {
   constructor(private repository: MonthlyFeeRepository) {}
@@ -24,7 +23,7 @@ export class MonthlyFeeService {
         case 'canceled': {
           return await this.repository.getByStatus('CANCELED');
         }
-        case 'currentMonth': {
+        case 'current_month': {
           const date = new Date();
           const initialDate = new Date(date.getFullYear(), date.getMonth(), 1);
           const finalDate = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
@@ -46,12 +45,9 @@ export class MonthlyFeeService {
       throw error;
     }
   };
-  update = async (id: number, data: MonthlyFeeDTO) => {
+  pay = async (id: number) => {
     try {
-      if (!id) throw new HttpError(404, 'identificador da mensalidade não enviado.');
-      if (!data) throw new HttpError(404, 'dados para atualização não enviados.');
-      if (data.status && data.status === 'PAID') return await this.repository.paidMonthlyFee(id);
-      return await this.repository.update(id, data);
+      return await this.repository.pay(id);
     } catch (error: any) {
       if (error.code === 'P2025') {
         throw new HttpError(404, 'Mensalidade não encontrada.');
@@ -59,6 +55,17 @@ export class MonthlyFeeService {
       throw error;
     }
   };
+  cancel = async (id: number) => {
+    try {
+      return await this.repository.cancel(id);
+    } catch (error: any) {
+      if (error.code === 'P2025') {
+        throw new HttpError(404, 'Mensalidade não encontrada.');
+      }
+      throw error;
+    }
+  };
+
   createInitialMonthlyFee = (classGroup: ClassGroupDTO) => {
     if (!classGroup.daysOfWeek || classGroup.daysOfWeek.length < 1) throw new HttpError(400, 'Falha ao calcular valor da mensalidade devido a falta dos dias de aulas.');
     const expiration_date = this.calculateExpirationDate();

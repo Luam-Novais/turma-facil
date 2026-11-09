@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import ClassGroupController from '../controllers/classGroup.controller';
 import { validateSchemaMiddleware } from '../middlewares/validateSchema';
-import { classGroupSchema } from '../schemas/classGroup.schema';
+import { classGroupSchema, updateClassGroupSchema } from '../schemas/classGroup.schema';
 
 const controller = new ClassGroupController();
 const router = Router();
@@ -12,7 +12,11 @@ router.post(
   (req, res, next) => validateSchemaMiddleware(req, res, next, classGroupSchema),
   (req, res, next) => controller.create(req, res, next),
 );
-router.put('/:id', (req, res, next) => controller.update(req, res, next));
+router.put(
+  '/:id',
+  (req, res, next) => validateSchemaMiddleware(req, res, next, updateClassGroupSchema),
+  (req, res, next) => controller.update(req, res, next),
+);
 router.delete('/:id', (req, res, next) => controller.delete(req, res, next));
 
 export default router;

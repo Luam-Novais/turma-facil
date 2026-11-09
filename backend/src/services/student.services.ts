@@ -29,10 +29,10 @@ export default class StudentService {
   };
   getStudent = async (id: string, filter?: string) => {
     try {
-      if (filter) {
+      if (filter && filter !== undefined) {
         switch (cleanString(filter)) {
           default: {
-            return await this.repository.get();
+            throw new HttpError(404, 'Busca não encontrada.');
           }
           case 'enrollments': {
             return await this.repository.getStudentAndEnrollments(Number(id));
@@ -42,7 +42,7 @@ export default class StudentService {
           }
         }
       }
-      const student = await this.repository.findById(Number(id));
+      const student = await this.repository.getById(Number(id));
       return student;
     } catch (error: any) {
       if (error.code === `P2025`) {

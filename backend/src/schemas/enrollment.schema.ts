@@ -8,3 +8,4 @@ export const enrollmentSchema = z.object({
   class_id: z.coerce.number(),
   student_data: studentSchema.optional(),
 });
+

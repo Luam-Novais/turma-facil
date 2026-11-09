@@ -1,8 +1,8 @@
 import { db } from '../config/prisma';
 import { type StudentDTO } from '../types/student';
 export default class StudentRepository {
-  findById = async (student_id: number) => {
-    return await db.student.findUnique({
+  getById = async (student_id: number) => {
+    return await db.student.findUniqueOrThrow({
       where: {
         id: student_id,
       },

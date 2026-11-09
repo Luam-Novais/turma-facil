@@ -18,7 +18,7 @@ export default class classGroupController {
   getById: RequestHandler = async (req, res, next) => {
     try {
       const { id } = req.params;
-      if (!isNaN(Number(id))) throw new HttpError(400, `Identificador inválido.`);
+      if (!id || isNaN(Number(id))) throw new HttpError(400, `Identificador inválido.`);
       const classGroup = await service.getById(Number(id));
       res.status(200).json(classGroup);
     } catch (error) {

@@ -6,3 +6,5 @@ export const classGroupSchema = z.object({
   monthly_price: z.coerce.number(),
   daysOfWeek: z.array(z.number())
   });
+
+export const updateClassGroupSchema = classGroupSchema.partial().strict();

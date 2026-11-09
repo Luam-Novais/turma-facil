@@ -1,6 +1,7 @@
 import { db } from '../config/prisma';
 import { MonthlyFeeDTO, MonthlyFeeStatus } from '../types/monthlyFee';
 import { HttpError } from '../middlewares/http.middleware';
+import { statusFieldsAvailableMonthlyFee } from '../utils/maps';
 export class MonthlyFeeRepository {
   //GET
   get = async () => {
@@ -18,7 +19,7 @@ export class MonthlyFeeRepository {
     });
   };
   getById = async (id: number) =>
-    await db.monthly_fee.findUnique({
+    await db.monthly_fee.findUniqueOrThrow({
       where: { id },
       include: {
         enrollment: {
@@ -80,15 +81,8 @@ export class MonthlyFeeRepository {
       },
     });
   };
-  update = async (id: number, data: Partial<MonthlyFeeDTO>) => {
-    return await db.monthly_fee.update({
-      where: { id },
-      data: {
-        ...data,
-      },
-    });
-  };
-  paidMonthlyFee = async (id: number) => {
+
+  pay = async (id: number) => {
     return await db.$transaction(async (tx) => {
       const monthly_fee = await tx.monthly_fee.findUniqueOrThrow({
         where: { id },
@@ -109,11 +103,8 @@ export class MonthlyFeeRepository {
           },
         },
       });
-      if (monthly_fee.status === 'PAID') {
-        throw new HttpError(400, 'Mensalidade já está paga.');
-      }
-      if (monthly_fee.status === 'CANCELED') {
-        throw new HttpError(400, 'Mensalidade cancelada não pode ser paga.');
+      if (!statusFieldsAvailableMonthlyFee[monthly_fee.status].includes('PAID')) {
+        throw new HttpError(400, 'O status desta mensalidade não pode ser atualizada para paga.');
       }
       const payment = await tx.payment.create({
         data: {
@@ -121,11 +112,32 @@ export class MonthlyFeeRepository {
           description: `Pagamento mensalidade da matrícula de ${monthly_fee.enrollment.student.name} na turma ${monthly_fee.enrollment.class.name}.`,
         },
       });
-      await tx.monthly_fee.update({
+      return await tx.monthly_fee.update({
         where: { id },
         data: {
           payment_id: payment.id,
           status: 'PAID',
+        },
+      });
+    });
+  };
+  cancel = async (id: number) => {
+    return await db.$transaction(async (tx) => {
+      const monthly_fee = await tx.monthly_fee.findUniqueOrThrow({
+        where: { id },
+        select: {
+          status: true,
+          id: true,
+        },
+      });
+
+      if (!statusFieldsAvailableMonthlyFee[monthly_fee.status].includes('CANCELED')) {
+        throw new HttpError(400, 'O status desta mensalidade não pode ser atualizada para cancelada.');
+      }
+     return await tx.monthly_fee.update({
+        where: { id },
+        data: {
+          status: 'CANCELED',
         },
       });
     });

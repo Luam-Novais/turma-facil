@@ -3,7 +3,7 @@ import { ClassGroupDTO } from '../types/classGroup';
 
 export default class ClassGroupDTORepository {
   findById = async (classGroup_id: number) => {
-    return await db.classGroup.findUnique({
+    return await db.classGroup.findUniqueOrThrow({
       where: {
         id: classGroup_id,
       },
