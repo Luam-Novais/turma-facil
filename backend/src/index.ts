@@ -6,9 +6,16 @@ import enrollmentsRoutes from './routes/enrollments.routes';
 import monthlyFeeRoutes from './routes/monthlyFee.routes';
 import { errorMiddleware } from './middlewares/http.middleware';
 import dotenv from 'dotenv';
+import { monthly_feeJob } from './jobs/monthlyFee.jobs';
+import { MonthlyFeeService } from '../src/services/monthlyFee.services';
+import { MonthlyFeeRepository } from '../src/repository/monthlyFee.repository';
+import { EnrollmentsRepository } from '../src/repository/enrollments.repository';
+
+const monthlyFeeService = new MonthlyFeeService(new MonthlyFeeRepository(), new EnrollmentsRepository());
+
 dotenv.config();
 const server = express();
-
+monthly_feeJob(monthlyFeeService);
 server.use(express.json());
 server.use(express.urlencoded());
 

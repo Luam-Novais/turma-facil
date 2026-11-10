@@ -1,10 +1,10 @@
 import { MonthlyFeeRepository } from '../repository/monthlyFee.repository';
+import { EnrollmentsRepository } from '../repository/enrollments.repository';
 import { HttpError } from '../middlewares/http.middleware';
 import { ClassGroupDTO } from '../types/classGroup';
-import { cleanString } from '../utils/string';
-
+import { cleanString } from '../utils/string';;
 export class MonthlyFeeService {
-  constructor(private repository: MonthlyFeeRepository) {}
+  constructor(private repository: MonthlyFeeRepository, private enrollmentRepository: EnrollmentsRepository) {}
   get = async (filter?: string) => {
     try {
       if (!filter || filter === 'undefined') return await this.repository.get();
@@ -65,7 +65,24 @@ export class MonthlyFeeService {
       throw error;
     }
   };
+  generateMonthlyFees = async () => {
+    const enrollments = await this.enrollmentRepository.getActiveEnrollments();
 
+    if (enrollments.length === 0) {
+      return { count: 0 };
+    }
+    const expiration_date = this.calculateExpirationDate();
+    const monthly_feeData = enrollments.map((enrollment) => {
+      const value = this.calculateValueMonthlyFee(enrollment.class);
+      expiration_date.setHours(0, 0, 0, 0);
+      return {
+        enrollment_id: enrollment.id,
+        value: value.value,
+        expiration_date,
+      };
+    });
+    return await this.repository.generateMonthlyFees(monthly_feeData);
+  };
   createInitialMonthlyFee = (classGroup: ClassGroupDTO) => {
     if (!classGroup.daysOfWeek || classGroup.daysOfWeek.length < 1) throw new HttpError(400, 'Falha ao calcular valor da mensalidade devido a falta dos dias de aulas.');
     const expiration_date = this.calculateExpirationDate();

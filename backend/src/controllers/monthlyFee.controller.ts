@@ -1,10 +1,12 @@
 import { RequestHandler } from 'express';
 import { MonthlyFeeService } from '../services/monthlyFee.services';
 import { MonthlyFeeRepository } from '../repository/monthlyFee.repository';
+import { EnrollmentsRepository } from '../repository/enrollments.repository';
 import { HttpError } from '../middlewares/http.middleware';
 
 const repository = new MonthlyFeeRepository();
-const service = new MonthlyFeeService(repository);
+const enrollmentRepository = new EnrollmentsRepository();
+const service = new MonthlyFeeService(repository, enrollmentRepository);
 
 export class MonthlyFeeController {
   get: RequestHandler = async (req, res, next) => {

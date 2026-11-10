@@ -1,7 +1,15 @@
 import { db } from '../config/prisma';
-import { MonthlyFeeDTO, MonthlyFeeStatus } from '../types/monthlyFee';
+import { Decimal } from '@prisma/client/runtime/client';
+import { MonthlyFee, MonthlyFeeDTO, MonthlyFeeStatus } from '../types/monthlyFee';
 import { HttpError } from '../middlewares/http.middleware';
 import { statusFieldsAvailableMonthlyFee } from '../utils/maps';
+
+interface CreateManyMonthlyFee {
+  enrollment_id: number;
+  value: number | Decimal;
+  expiration_date: Date;
+}
+
 export class MonthlyFeeRepository {
   //GET
   get = async () => {
@@ -61,6 +69,7 @@ export class MonthlyFeeRepository {
         },
       },
     });
+ 
   getCurrentMonth = async (initialDate: Date, finalDate: Date) => {
     return await db.monthly_fee.findMany({
       where: {
@@ -81,7 +90,7 @@ export class MonthlyFeeRepository {
       },
     });
   };
-
+  //UPDATE
   pay = async (id: number) => {
     return await db.$transaction(async (tx) => {
       const monthly_fee = await tx.monthly_fee.findUniqueOrThrow({
@@ -142,6 +151,13 @@ export class MonthlyFeeRepository {
       });
     });
   };
+  //CREATE
+  generateMonthlyFees = async (monthly_feeData: CreateManyMonthlyFee[])=>{
+    return await db.monthly_fee.createMany({
+      data: monthly_feeData,
+      skipDuplicates: true,
+    });
+  }
   createInEnrollmentCreation = async (data: MonthlyFeeDTO) => {
     return await db.monthly_fee.create({
       data: { ...data },

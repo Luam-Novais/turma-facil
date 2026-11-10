@@ -31,6 +31,9 @@ export class EnrollmentsRepository {
   getAllEnrollmentsClass = async (id: number) => {
     return await db.enrollment.findMany({ where: { class_id: id }, include: { student: true } });
   };
+  getActiveEnrollments = async () => {
+    return await db.enrollment.findMany({ where: { status: 'ACTIVE' }, include: { class: true } });
+  };
   getEnrollmentsByStatus = async (status: StatusEnrollment) => {
     const [enrollments, total] = await Promise.all([
       await db.enrollment.findMany({
@@ -87,7 +90,7 @@ export class EnrollmentsRepository {
         },
       });
       const monthly_feeData = monthlyFeeService.createInitialMonthlyFee(classGroup);
-      console.log(monthly_feeData, 'aqui');
+
       await tx.monthly_fee.create({
         data: {
           value: monthly_feeData.value,
