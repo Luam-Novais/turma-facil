@@ -40,6 +40,9 @@ export class MonthlyFeeRepository {
         },
       },
     });
+  getPending = async () => {
+    return await db.monthly_fee.findMany();
+  };
   getByStatus = async (status: MonthlyFeeStatus) => {
     return await db.monthly_fee.findMany({
       where: { status },
@@ -69,7 +72,6 @@ export class MonthlyFeeRepository {
         },
       },
     });
- 
   getCurrentMonth = async (initialDate: Date, finalDate: Date) => {
     return await db.monthly_fee.findMany({
       where: {
@@ -143,7 +145,7 @@ export class MonthlyFeeRepository {
       if (!statusFieldsAvailableMonthlyFee[monthly_fee.status].includes('CANCELED')) {
         throw new HttpError(400, 'O status desta mensalidade não pode ser atualizada para cancelada.');
       }
-     return await tx.monthly_fee.update({
+      return await tx.monthly_fee.update({
         where: { id },
         data: {
           status: 'CANCELED',
@@ -151,13 +153,26 @@ export class MonthlyFeeRepository {
       });
     });
   };
+  overdue = async () => {
+    return await db.monthly_fee.updateMany({
+      where: {
+        status: 'PENDING',
+        expiration_date: {
+          lt: new Date(),
+        },
+      },
+      data: {
+        status: 'OVERDUE',
+      },
+    });
+  };
   //CREATE
-  generateMonthlyFees = async (monthly_feeData: CreateManyMonthlyFee[])=>{
+  generateMonthlyFees = async (monthly_feeData: CreateManyMonthlyFee[]) => {
     return await db.monthly_fee.createMany({
       data: monthly_feeData,
       skipDuplicates: true,
     });
-  }
+  };
   createInEnrollmentCreation = async (data: MonthlyFeeDTO) => {
     return await db.monthly_fee.create({
       data: { ...data },

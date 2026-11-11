@@ -1,4 +1,4 @@
-import { Decimal } from "@prisma/client/runtime/client";
+import { Decimal } from '@prisma/client/runtime/client';
 
 export type MonthlyFeeStatus = 'PENDING' | 'PAID' | 'OVERDUE' | 'CANCELED';
 export interface MonthlyFee {
@@ -7,9 +7,8 @@ export interface MonthlyFee {
   value: Decimal;
   status: MonthlyFeeStatus;
   expiration_date: Date | string;
-  payment_id?: number;
+  payment_id?: number | null;
   created_at: Date;
-  updated_at: Date;
 }
 
 export interface MonthlyFeeDTO {
@@ -18,5 +17,5 @@ export interface MonthlyFeeDTO {
   value: string;
   status: MonthlyFeeStatus;
   expiration_date: Date | string;
-  payment_id?: number;
+  payment_id?: number | null;
 }

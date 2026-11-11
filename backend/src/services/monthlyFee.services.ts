@@ -2,7 +2,7 @@ import { MonthlyFeeRepository } from '../repository/monthlyFee.repository';
 import { EnrollmentsRepository } from '../repository/enrollments.repository';
 import { HttpError } from '../middlewares/http.middleware';
 import { ClassGroupDTO } from '../types/classGroup';
-import { cleanString } from '../utils/string';;
+import { cleanString } from '../utils/string';
 export class MonthlyFeeService {
   constructor(private repository: MonthlyFeeRepository, private enrollmentRepository: EnrollmentsRepository) {}
   get = async (filter?: string) => {
@@ -64,6 +64,9 @@ export class MonthlyFeeService {
       }
       throw error;
     }
+  };
+  updateToOverdue = async () => {
+    return await this.repository.overdue();
   };
   generateMonthlyFees = async () => {
     const enrollments = await this.enrollmentRepository.getActiveEnrollments();

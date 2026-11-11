@@ -68,7 +68,7 @@ model Monthly_fee{
     enrollment_id Int
     value Decimal @db.Decimal(10, 2)
     enrollment Enrollment @relation(fields: [enrollment_id], references: [id])
-    expiration_date DateTime
+    expiration_date DateTime @db.Date
     status STATUS_MONTHLY_FEE @default(PENDING)
     payment_id Int? @unique
     payment Payment? @relation(fields: [payment_id], references: [id])

@@ -10,5 +10,6 @@ export const validateSchemaMiddleware = (req: Request, res: Response, next: Next
     if (error instanceof z.ZodError) {
       res.status(400).json({ messageError: 'Formato dos dados enviados inválidos.' });
     }
+    next(error)
   }
 };
